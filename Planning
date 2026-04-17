@@ -1,0 +1,9 @@
+Core Game Mechanics:
+
+Player Movement along the bottom of the screen (Left and Right only)
+
+Centipede Movement/Logic: The centipede moves horozontally left or right.
+When it hits a block (mushroom in this case) it shifts down a block and
+changes its horozontal direction.
+
+Mushrooms act as obstacles and shields since the bullets hit them
