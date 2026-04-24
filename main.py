@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load("centipede-sprite.png").convert_alpha()
         # sets the starting position using the image's dimensions
         self.rect = self.image.get_rect()
-        self.rect.center = (400, 300)  # May have to tweak these later!
+        self.rect.center = (800, 900)  # May have to tweak these later!
 
     #moves the player left and right when the left and right arrow keys are pressed
     def update(self):
@@ -114,10 +114,25 @@ while running:
                 bullet = Bullet(player.rect.centerx, player.rect.top)
                 bullets.add(bullet)
 
+for bullet in bullets:
+    hit = pygame.sprite.spritecollide(bullet, centipede, True)
+    if hit:
+        bullet.kill()
+
+for bullet in bullets:
+    hit = pygame.sprite.spritecollide(bullet, mushrooms, True)
+    if hit:
+        bullet.kill()
+
+if pygame.sprite.collide_rect(player, centipede, False):
+    print("Game Over")
+    running = False
+
     #UPDATE
     all_sprites.update()
     bullets.update()
     centipede.update()
+    mushrooms.update()
 
 
     #DRAWS EVERYTHING
