@@ -14,13 +14,18 @@ clock = pygame.time.Clock()
 
 #The class that establishes the bullet
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, x, y):
         super().__init__()
         #loads the sprite and optimizes it for pygame
         self.image = pygame.image.load("bulletsprite.png").convert_alpha()
         #sets the starting position using the image's dimensions
-        self.rect = self.image.get_rect()
-        self.rect.center = (400,300) #may have to be tweaked
+        self.rect = self.image.get_rect(center=(x,y))
+
+    #moves the bullet downward and makes it go away when it hits the bottom of the screen
+    def update(self):
+        self.rect.y -= 10
+        if self.rect.bottom < 0:
+            self.kill()
 
 #The class that establishes the player
 class Player(pygame.sprite.Sprite):
@@ -31,6 +36,14 @@ class Player(pygame.sprite.Sprite):
         # sets the starting position using the image's dimensions
         self.rect = self.image.get_rect()
         self.rect.center = (400, 300)  # May have to tweak these later!
+
+    #moves the player left and right when the left and right arrow keys are pressed
+    def update(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            self.rect.x += 5
+        if keys[pygame.K_RIGHT]:
+            self.rect.x -= 5
 
 class Centipede(pygame.sprite.Sprite):
     def __init__(self):
@@ -70,8 +83,7 @@ class Mushroom (pygame.sprite.Sprite):
         else:
             self.image = self.original_image
 
-    def change_direction(selfself):
-        self.direction *= -1
+
 
 
 
@@ -83,7 +95,7 @@ all_sprites.add(player)
 running = True
 while running:
     clock.tick(60)
-    screen.fill((255, 255, 255)) #Black
+    screen.fill((0, 0, 0)) #Black
 
     #EVENTS IN GAME
     for event in pygame.event.get():
