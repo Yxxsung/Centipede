@@ -45,31 +45,28 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_RIGHT]:
             self.rect.x -= 5
 
-class Centipede(pygame.sprite.Sprite):
-    def __init__(self):
+class CentipedeSegment(pygame.sprite.Sprite):
+    def __init__(self, x, y):
         super().__init__()
         # it also needs to store its position and horozontal direction (+1 or -1)
         # The following 4 lines keep an 'original' version of the sprite to reverse horozontally (Switching directions)
-        self.original_image = pygame.Surface((30, 50))
-        self.original_image.fill((255, 0, 0))  # Red NPC
-        self.image = self.original_image
-        self.rect = self.image.get_rect()
-
-        #Stores the position as a Vector2 for smoother movement
-        self.pos = pygame.math.Vector2(x, y)
-        self.rect.center = self.pos
-
-        #Stores the horozontal position (1 = right, -1 = left)
+        self.original_image = pygame.Surface((20, 20))
+        self.original_image.fill((0, 255, 0))  # Red NPC
+        self.rect = self.image.get_rect(topleft=(x,y))
         self.direction = 1
-        self.speed = 3 #May need to be tweaked a bit!
+
+    def update(self):
+        self.rect.x += 3 * self.direction
+
+        if self.rect.right >= 1600 or self.rect.left <= 0:
+            self.direction *= -1
+            self.rect.y += 20
 
 class Mushroom (pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.original_image = pygame.image.load("mushroomSprite.png").convert_alpha()
-        for _ in range(30):
-            x = random.randrange(0, screen.get_width(), 20)
-            y = random.randrange(0, screen.get_height(), 20)
+        self.image = pygame.image.load("mushroomSprite.png").convert_alpha()
+        self.rect = self.image.get_rect()
 
 
     #updates the direction of movement
@@ -86,23 +83,44 @@ class Mushroom (pygame.sprite.Sprite):
 
 
 
-
-#MAIN GAME LOOP
 all_sprites = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
 
+mushrooms = pygame.sprite.Group()
+
+#this loop and the below add statement add random mushrooms on the map
+for _ in range(30):
+    m = Mushroom()
+    m.rect.topleft = (
+        random.randrange(0, 1600, 20),
+        random.randrange(0, 800, 20)
+    )
+    mushrooms.add(m)
+
+centipede = pygame.sprite.Group()
+for i in range(10):
+    centipede.add(CentipedeSegment(i*20, 0))
+
+
+#MAIN GAME LOOP
+bullets = pygame.sprite.Group()
+
 running = True
 while running:
     clock.tick(60)
-    screen.fill((0, 0, 0)) #Black
 
     #EVENTS IN GAME
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
+                bullet = Bullet(player.rect.centerx, player.rect.top)
+                bullets.add(bullet)
+    #UPDATE
+
 
 
 #Draws the sprites on screen so the player can see them
