@@ -41,17 +41,19 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            self.rect.x += 5
-        if keys[pygame.K_RIGHT]:
             self.rect.x -= 5
+        if keys[pygame.K_RIGHT]:
+            self.rect.x += 5
 
 class CentipedeSegment(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        # it also needs to store its position and horozontal direction (+1 or -1)
-        # The following 4 lines keep an 'original' version of the sprite to reverse horozontally (Switching directions)
-        self.original_image = pygame.Surface((20, 20))
-        self.original_image.fill((0, 255, 0))  # Red NPC
+        #load the image
+        self.original_image = pygame.image.load("centipede-sprite.png").convert_alpha()
+        #scale it to fit the grid
+        self.original_image = pygame.transform.scale(self.original_image, (20, 20))
+
+        self.image = self.original_image
         self.rect = self.image.get_rect(topleft=(x,y))
         self.direction = 1
 
@@ -62,25 +64,17 @@ class CentipedeSegment(pygame.sprite.Sprite):
             self.direction *= -1
             self.rect.y += 20
 
-class Mushroom (pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load("mushroomSprite.png").convert_alpha()
-        self.rect = self.image.get_rect()
-
-
-    #updates the direction of movement
-    def update(self):
-        self.pos.x += self.speed * self.direction
-        self.rect.center = self.pos
-
-        #flips the image when the direction changes
+        #flip the sprite based on the direction
         if self.direction == -1:
             self.image = pygame.transform.flip(self.original_image, True, False)
         else:
             self.image = self.original_image
 
-
+class Mushroom (pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("mushroomSprite.png").convert_alpha()
+        self.rect = self.image.get_rect()
 
 
 all_sprites = pygame.sprite.Group()
@@ -119,9 +113,21 @@ while running:
             if event.key == pygame.K_SPACE:
                 bullet = Bullet(player.rect.centerx, player.rect.top)
                 bullets.add(bullet)
+
     #UPDATE
+    all_sprites.update()
+    bullets.update()
+    centipede.update()
+
+
+    #DRAWS EVERYTHING
+    screen.fill((0, 0, 0)) #Black
+    all_sprites.draw(screen)
+    bullets.draw(screen)
+    mushrooms.draw(screen)
+    centipede.draw(screen)
+
+    pygame.display.flip()
 
 
 
-#Draws the sprites on screen so the player can see them
-all_sprites.draw(screen)
