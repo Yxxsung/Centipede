@@ -70,6 +70,24 @@ class CentipedeSegment(pygame.sprite.Sprite):
         else:
             self.image = self.original_image
 
+            #makes the centipede shift directions and shift down when it hits a mushroom
+            for mushroom in mushrooms:
+                if self.rect.colliderect(mushroom.rect):
+                    self.direction *= -1
+                    self.rect.y += 20
+                    break
+
+positions = []
+
+for segment in centipede:
+    positions.append(segment.rect.topleft)
+
+for i, segment in enumerate(centipede):
+    if i == 0:
+        segment.update()
+    else:
+        segment.rect.topleft = positions[i - 1]
+
 class Mushroom (pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -80,6 +98,7 @@ class Mushroom (pygame.sprite.Sprite):
 all_sprites = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
+all_sprites.add(mushrooms)
 
 mushrooms = pygame.sprite.Group()
 
@@ -114,17 +133,15 @@ while running:
                 bullet = Bullet(player.rect.centerx, player.rect.top)
                 bullets.add(bullet)
 
+#this chunk makes it so if the bullet hits the mushrooms or centipede it 'kills'
 for bullet in bullets:
-    hit = pygame.sprite.spritecollide(bullet, centipede, True)
-    if hit:
+    if pygame.sprite.spritecollide(bullet, centipede, True):
         bullet.kill()
 
-for bullet in bullets:
-    hit = pygame.sprite.spritecollide(bullet, mushrooms, True)
-    if hit:
+    if pygame.sprite.spritecollide(bullet, mushrooms, True):
         bullet.kill()
 
-if pygame.sprite.collide_rect(player, centipede, False):
+if pygame.sprite.spritecollide(player, centipede, False):
     print("Game Over")
     running = False
 
