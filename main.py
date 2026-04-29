@@ -57,7 +57,7 @@ class CentipedeSegment(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(x,y))
         self.direction = 1
 
-    def update(self):
+    def update(self, mushrooms):
         self.rect.x += 3 * self.direction
 
         if self.rect.right >= 1600 or self.rect.left <= 0:
@@ -77,16 +77,6 @@ class CentipedeSegment(pygame.sprite.Sprite):
                     self.rect.y += 20
                     break
 
-positions = []
-
-for segment in centipede:
-    positions.append(segment.rect.topleft)
-
-for i, segment in enumerate(centipede):
-    if i == 0:
-        segment.update()
-    else:
-        segment.rect.topleft = positions[i - 1]
 
 class Mushroom (pygame.sprite.Sprite):
     def __init__(self):
@@ -95,12 +85,11 @@ class Mushroom (pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 
+mushrooms = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
 all_sprites.add(mushrooms)
-
-mushrooms = pygame.sprite.Group()
 
 #this loop and the below add statement add random mushrooms on the map
 for _ in range(30):
@@ -132,6 +121,18 @@ while running:
             if event.key == pygame.K_SPACE:
                 bullet = Bullet(player.rect.centerx, player.rect.top)
                 bullets.add(bullet)
+
+#This chunk is the cenptipede movement logic
+positions = []
+
+for segment in centipede:
+    positions.append(segment.rect.topleft)
+
+for i, segment in enumerate(centipede):
+    if i == 0:
+        segment.update()
+    else:
+        segment.rect.topleft = positions[i - 1]
 
 #this chunk makes it so if the bullet hits the mushrooms or centipede it 'kills'
 for bullet in bullets:
