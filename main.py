@@ -6,6 +6,12 @@ import random
 
 pygame.init()
 
+#establishes game music
+pygame.mixer.init()
+
+pygame.mixer.music.load("retroarcademusic.mp3")
+pygame.mixer.music.play(-1) #loops forever
+
 #establishes the screen for gameplay and its size h,v
 screen = pygame.display.set_mode((1600, 1000)) #may have to be tweaked
 
@@ -116,6 +122,9 @@ for i in range(30): #number of segments
     else:
         centipede.add(CentipedeSegment(i*20, 0,))
 
+#sets the font for the win/lose statements
+font = pygame.font.SysFont(None, 100)
+
 
 #MAIN GAME LOOP -- INDENT EVERTHING IN THE MAIN LOOP TO BE INSIDE THE WHILE RUNNING!!
 bullets = pygame.sprite.Group()
@@ -123,6 +132,7 @@ bullets = pygame.sprite.Group()
 running = True
 while running:
     clock.tick(60)
+
 
     #EVENTS IN GAME
     for event in pygame.event.get():
@@ -175,5 +185,10 @@ while running:
 
     pygame.display.flip()
 
-
+if len(centipede) == 0:
+    win_text = font.render("YOU WIN!", True, (0, 255, 0))
+    screen.blit(win_text, (600, 400))
+    pygame.display.flip()
+    pygame.time.delay(3000)
+    running = False
 
