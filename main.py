@@ -20,6 +20,8 @@ class Bullet(pygame.sprite.Sprite):
         self.image = pygame.image.load("bulletsprite.png").convert_alpha()
         #sets the starting position using the image's dimensions
         self.rect = self.image.get_rect(center=(x,y))
+        # Scaling the mushrooms to make them smaller
+        self.image = pygame.transform.scale(self.image, (30, 30))
 
     #moves the bullet downward and makes it go away when it hits the bottom of the screen
     def update(self):
@@ -32,7 +34,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         # loads the sprite and optimizes it for Pygame
-        self.image = pygame.image.load("centipede-sprite.png").convert_alpha()
+        self.image = pygame.image.load("HeroSpriteSheet.png").convert_alpha()
         # sets the starting position using the image's dimensions
         self.rect = self.image.get_rect()
         self.rect.center = (800, 900)  # May have to tweak these later!
@@ -49,9 +51,9 @@ class CentipedeSegment(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         #load the image
-        self.original_image = pygame.image.load("centipede-sprite.png").convert_alpha()
+        self.original_image = pygame.image.load("centipedeHead-sprite.png").convert_alpha()
         #scale it to fit the grid
-        self.original_image = pygame.transform.scale(self.original_image, (20, 20))
+        self.original_image = pygame.transform.scale(self.original_image, (40, 40))
 
         self.image = self.original_image
         self.rect = self.image.get_rect(topleft=(x,y))
@@ -82,6 +84,8 @@ class Mushroom (pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("mushroomSprite.png").convert_alpha()
+        # Scaling the mushrooms to make them smaller
+        self.image = pygame.transform.scale(self.image, (30, 30))
         self.rect = self.image.get_rect()
 
 
@@ -101,8 +105,8 @@ for _ in range(30):
     mushrooms.add(m)
 
 centipede = pygame.sprite.Group()
-for i in range(10):
-    centipede.add(CentipedeSegment(i*20, 0))
+for i in range(30): #number of segments
+    centipede.add(CentipedeSegment(i*100, 0)) #spacing of segments
 
 
 #MAIN GAME LOOP -- INDENT EVERTHING IN THE MAIN LOOP TO BE INSIDE THE WHILE RUNNING!!
