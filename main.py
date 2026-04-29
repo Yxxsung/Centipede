@@ -123,14 +123,11 @@ while running:
                 bullets.add(bullet)
 
 #This chunk is the cenptipede movement logic
-positions = []
-
-for segment in centipede:
-    positions.append(segment.rect.topleft)
+positions = [seg.rect.topleft for seg in centipede]
 
 for i, segment in enumerate(centipede):
     if i == 0:
-        segment.update()
+        segment.update(mushrooms)
     else:
         segment.rect.topleft = positions[i - 1]
 
@@ -146,10 +143,9 @@ if pygame.sprite.spritecollide(player, centipede, False):
     print("Game Over")
     running = False
 
-    #UPDATE
+    #UPDATE (no longer includes centipede.update())
     all_sprites.update()
     bullets.update()
-    centipede.update()
     mushrooms.update()
 
 
