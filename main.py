@@ -105,7 +105,7 @@ for i in range(10):
     centipede.add(CentipedeSegment(i*20, 0))
 
 
-#MAIN GAME LOOP
+#MAIN GAME LOOP -- INDENT EVERTHING IN THE MAIN LOOP TO BE INSIDE THE WHILE RUNNING!!
 bullets = pygame.sprite.Group()
 
 running = True
@@ -122,26 +122,26 @@ while running:
                 bullet = Bullet(player.rect.centerx, player.rect.top)
                 bullets.add(bullet)
 
-#This chunk is the cenptipede movement logic
-positions = [seg.rect.topleft for seg in centipede]
+    #This chunk is the cenptipede movement logic
+    positions = [seg.rect.topleft for seg in centipede]
 
-for i, segment in enumerate(centipede):
-    if i == 0:
-        segment.update(mushrooms)
-    else:
-        segment.rect.topleft = positions[i - 1]
+    for i, segment in enumerate(centipede):
+        if i == 0:
+            segment.update(mushrooms)
+        else:
+            segment.rect.topleft = positions[i - 1]
 
-#this chunk makes it so if the bullet hits the mushrooms or centipede it 'kills'
-for bullet in bullets:
-    if pygame.sprite.spritecollide(bullet, centipede, True):
-        bullet.kill()
+    #this chunk makes it so if the bullet hits the mushrooms or centipede it 'kills'
+    for bullet in bullets:
+        if pygame.sprite.spritecollide(bullet, centipede, True):
+            bullet.kill()
 
-    if pygame.sprite.spritecollide(bullet, mushrooms, True):
-        bullet.kill()
+        if pygame.sprite.spritecollide(bullet, mushrooms, True):
+            bullet.kill()
 
-if pygame.sprite.spritecollide(player, centipede, False):
-    print("Game Over")
-    running = False
+    if pygame.sprite.spritecollide(player, centipede, False):
+        print("Game Over")
+        running = False
 
     #UPDATE (no longer includes centipede.update())
     all_sprites.update()
