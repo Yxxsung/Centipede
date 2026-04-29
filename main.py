@@ -48,16 +48,21 @@ class Player(pygame.sprite.Sprite):
             self.rect.x += 5
 
 class CentipedeSegment(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, is_head=False):
         super().__init__()
-        #load the image
-        self.original_image = pygame.image.load("centipedeHead-sprite.png").convert_alpha()
-        #scale it to fit the grid
-        self.original_image = pygame.transform.scale(self.original_image, (40, 40))
+
+        #Decides if the segment is a head or body and shows the correct sprite
+        if is_head:
+            self.image = pygame.image.load("centipedeHead-sprite.png").convert_alpha()
+        else:
+            self.image = pygame.image.load("centipedeBody-sprite.png").convert_alpha()
+
+        self.original_image = pygame.transform.scale(self.image, (35,35))
 
         self.image = self.original_image
         self.rect = self.image.get_rect(topleft=(x,y))
         self.direction = 1
+        self.is_head = is_head
 
     def update(self, mushrooms):
         self.rect.x += 3 * self.direction
@@ -106,7 +111,10 @@ for _ in range(30):
 
 centipede = pygame.sprite.Group()
 for i in range(30): #number of segments
-    centipede.add(CentipedeSegment(i*100, 0)) #spacing of segments
+    if i == 0:
+        centipede.add(CentipedeSegment(i*20, 0, is_head=True))
+    else:
+        centipede.add(CentipedeSegment(i*20, 0,))
 
 
 #MAIN GAME LOOP -- INDENT EVERTHING IN THE MAIN LOOP TO BE INSIDE THE WHILE RUNNING!!
@@ -131,9 +139,9 @@ while running:
 
     for i, segment in enumerate(centipede):
         if i == 0:
-            segment.update(mushrooms)
+            segment.update(mushrooms) #makes the head move
         else:
-            segment.rect.topleft = positions[i - 1]
+            segment.rect.topleft = positions[i - 1] #makes the body follow
 
     #this chunk makes it so if the bullet hits the mushrooms or centipede it 'kills'
     for bullet in bullets:
@@ -143,8 +151,13 @@ while running:
         if pygame.sprite.spritecollide(bullet, mushrooms, True):
             bullet.kill()
 
+    #The next chunk establishes win and lose conditions
     if pygame.sprite.spritecollide(player, centipede, False):
         print("Game Over")
+        running = False
+
+    if len(centipede) == 0:
+        print("You Win!")
         running = False
 
     #UPDATE (no longer includes centipede.update())
