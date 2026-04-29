@@ -11,6 +11,11 @@ pygame.mixer.init()
 
 pygame.mixer.music.load("retroarcademusic.mp3")
 pygame.mixer.music.play(-1) #loops forever
+pygame.mixer.music.set_volume(0.3) #volume may range from 0.0-1.0
+
+#Sound Effects
+bullet_Sound = pygame.mixer.Sound("gunshot.mp3")
+hit_Sound = pygame.mixer.Sound("hit-flesh.mp3")
 
 #establishes the screen for gameplay and its size h,v
 screen = pygame.display.set_mode((1600, 1000)) #may have to be tweaked
@@ -143,6 +148,7 @@ while running:
             if event.key == pygame.K_SPACE:
                 bullet = Bullet(player.rect.centerx, player.rect.top)
                 bullets.add(bullet)
+                bullet_Sound.play()
 
     #This chunk is the cenptipede movement logic
     positions = [seg.rect.topleft for seg in centipede]
@@ -156,6 +162,7 @@ while running:
     #this chunk makes it so if the bullet hits the mushrooms or centipede it 'kills'
     for bullet in bullets:
         if pygame.sprite.spritecollide(bullet, centipede, True):
+            hit_Sound.play()
             bullet.kill()
 
         if pygame.sprite.spritecollide(bullet, mushrooms, True):
